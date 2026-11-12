@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 // URLJoin joins a base URL to one or more path components.
@@ -41,6 +42,8 @@ func URLJoin(baseURL string, paths ...string) (string, error) {
 }
 
 // Equal normalizes two URLs and then compares for equality.
+//
+// The scheme and host are compared case-insensitively; the path is not.
 func Equal(a, b string) bool {
 	au, err := url.Parse(a)
 	if err != nil {
@@ -59,6 +62,9 @@ func Equal(a, b string) bool {
 			u.Path = "/"
 		}
 		u.Path = filepath.Clean(u.Path)
+		// The scheme and host are case-insensitive (RFC 3986 section 3.1 and 3.2.2).
+		u.Scheme = strings.ToLower(u.Scheme)
+		u.Host = strings.ToLower(u.Host)
 	}
 	return au.String() == bu.String()
 }
