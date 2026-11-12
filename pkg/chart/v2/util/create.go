@@ -200,7 +200,7 @@ httpRoute:
   - matches:
     - path:
         type: PathPrefix
-        value: /headers
+        value: /healthz
   #   filters:
   #   - type: RequestHeaderModifier
   #     requestHeaderModifier:
