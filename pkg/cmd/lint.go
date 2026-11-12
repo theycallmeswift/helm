@@ -47,6 +47,7 @@ func newLintCmd(out io.Writer) *cobra.Command {
 	client := action.NewLint()
 	valueOpts := &values.Options{}
 	var kubeVersion string
+	var noSummary bool
 
 	cmd := &cobra.Command{
 		Use:   "lint PATH",
@@ -136,7 +137,7 @@ func newLintCmd(out io.Writer) *cobra.Command {
 			if failed > 0 {
 				return errors.New(summary)
 			}
-			if !client.Quiet || errorsOrWarnings > 0 {
+			if !noSummary && (!client.Quiet || errorsOrWarnings > 0) {
 				fmt.Fprintln(out, summary)
 			}
 			return nil
@@ -148,6 +149,7 @@ func newLintCmd(out io.Writer) *cobra.Command {
 	f.BoolVar(&client.WithSubcharts, "with-subcharts", false, "lint dependent charts")
 	f.BoolVar(&client.Quiet, "quiet", false, "print only warnings and errors")
 	f.BoolVar(&client.SkipSchemaValidation, "skip-schema-validation", false, "if set, disables JSON schema validation")
+	f.BoolVar(&noSummary, "no-summary", false, "do not print the final summary line")
 	f.StringVar(&kubeVersion, "kube-version", "", "Kubernetes version used for capabilities and deprecation checks")
 	addValueOptionsFlags(f, valueOpts)
 
