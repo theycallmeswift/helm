@@ -26,6 +26,9 @@ import (
 	"helm.sh/helm/v4/pkg/action"
 )
 
+// addDryRunFlag registers the --dry-run flag on cmd. The flag accepts "none",
+// "client" or "server"; the legacy boolean forms and a bare --dry-run are still
+// accepted and are resolved by cmdGetDryRunFlagStrategy.
 func addDryRunFlag(cmd *cobra.Command) {
 	// --dry-run options with expected outcome:
 	// - Not set means no dry run and server is contacted.
@@ -40,8 +43,13 @@ func addDryRunFlag(cmd *cobra.Command) {
 	f.Lookup("dry-run").NoOptDefVal = "unset"
 }
 
-// Determine the `action.DryRunStrategy` given -dry-run=<value>` flag (or absence of)
-// Legacy usage of the flag: boolean values, and `--dry-run` (without value) are supported, and log warnings emitted
+// cmdGetDryRunFlagStrategy determines the action.DryRunStrategy from the
+// `--dry-run=<value>` flag (or its absence).
+//
+// Legacy usage of the flag (boolean values, and `--dry-run` without a value) is
+// still supported, but a deprecation warning is logged. When isTemplate is true,
+// a value that would disable the dry run is rejected, since `helm template`
+// never contacts the cluster.
 func cmdGetDryRunFlagStrategy(cmd *cobra.Command, isTemplate bool) (action.DryRunStrategy, error) {
 	f := cmd.Flag("dry-run")
 	v := f.Value.String()
