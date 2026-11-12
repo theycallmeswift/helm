@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 // URLJoin joins a base URL to one or more path components.
@@ -36,7 +37,12 @@ func URLJoin(baseURL string, paths ...string) (string, error) {
 	// We want path instead of filepath because path always uses /.
 	all := []string{u.Path}
 	all = append(all, paths...)
-	u.Path = path.Join(all...)
+	joined := path.Join(all...)
+	// path.Join drops a trailing slash, so restore it if the final element had one.
+	if strings.HasSuffix(all[len(all)-1], "/") && !strings.HasSuffix(joined, "/") {
+		joined += "/"
+	}
+	u.Path = joined
 	return u.String(), nil
 }
 
