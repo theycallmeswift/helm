@@ -235,8 +235,15 @@ func getHistory(client *action.History, name string) (releaseHistory, error) {
 
 	releaseutil.Reverse(hist, releaseutil.SortByRevision)
 
+	// A non-positive --max means "no limit" rather than an empty history.
+	limit := len(hist)
+	limit = client.Max
+	if limit <= 0 || limit > len(hist) {
+		limit = len(hist)
+	}
+
 	var rels []*release.Release
-	for i := 0; i < min(len(hist), client.Max); i++ {
+	for i := 0; i < limit; i++ {
 		rels = append(rels, hist[i])
 	}
 
