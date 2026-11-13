@@ -66,7 +66,7 @@ func newEnvCmd(out io.Writer) *cobra.Command {
 func getSortedEnvVarKeys() []string {
 	envVars := settings.EnvVars()
 
-	var keys []string
+	keys := make([]string, 0, len(envVars))
 	for k := range envVars {
 		keys = append(keys, k)
 	}
