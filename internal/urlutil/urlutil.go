@@ -20,12 +20,15 @@ import (
 	"net/url"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 // URLJoin joins a base URL to one or more path components.
 //
 // It's like filepath.Join for URLs. If the baseURL is pathish, this will still
 // perform a join.
+//
+// A trailing slash on the last path component is preserved.
 //
 // If the URL is unparsable, this returns an error.
 func URLJoin(baseURL string, paths ...string) (string, error) {
@@ -37,6 +40,11 @@ func URLJoin(baseURL string, paths ...string) (string, error) {
 	all := []string{u.Path}
 	all = append(all, paths...)
 	u.Path = path.Join(all...)
+	// path.Join cleans its result, which removes a trailing slash. Keep it when
+	// the last component asked for one.
+	if n := len(paths); n > 0 && strings.HasSuffix(paths[n-1], "/") && !strings.HasSuffix(u.Path, "/") {
+		u.Path += "/"
+	}
 	return u.String(), nil
 }
 

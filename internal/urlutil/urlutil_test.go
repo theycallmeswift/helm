@@ -33,6 +33,8 @@ func TestURLJoin(t *testing.T) {
 		{name: "URL, two paths", url: "http://example.com", paths: []string{"hello", "world"}, expect: "http://example.com/hello/world"},
 		{name: "URL, no paths", url: "http://example.com", paths: []string{}, expect: "http://example.com"},
 		{name: "basepath, two paths", url: "../example.com", paths: []string{"hello", "world"}, expect: "../example.com/hello/world"},
+		{name: "URL, trailing slash on last path", url: "http://example.com/repo", paths: []string{"charts/"}, expect: "http://example.com/repo/charts/"},
+		{name: "URL, trailing slash on middle path", url: "http://example.com", paths: []string{"charts/", "index.yaml"}, expect: "http://example.com/charts/index.yaml"},
 	}
 
 	for _, tt := range tests {
