@@ -56,7 +56,7 @@ Only items that match the filter will be returned.
 If no results are found, 'helm list' will exit 0, but with no output (or in
 the case of no '-q' flag, only headers).
 
-By default, up to 256 items may be returned. To limit this, use the '--max' flag.
+By default, up to 50 items may be returned. To limit this, use the '--max' flag.
 Setting '--max' to 0 (or a negative value) will return all results. Pairing
 the '--max' flag with the '--offset' flag allows you to page through results.
 `
@@ -129,7 +129,7 @@ func newListCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
 	f.BoolVar(&client.Failed, "failed", false, "show failed releases")
 	f.BoolVar(&client.Pending, "pending", false, "show pending releases")
 	f.BoolVarP(&client.AllNamespaces, "all-namespaces", "A", false, "list releases across all namespaces")
-	f.IntVarP(&client.Limit, "max", "m", 256, "maximum number of releases to fetch")
+	f.IntVarP(&client.Limit, "max", "m", 50, "maximum number of releases to fetch")
 	f.IntVar(&client.Offset, "offset", 0, "next release index in the list, used to offset from start value")
 	f.StringVarP(&client.Filter, "filter", "f", "", "a regular expression (Perl compatible). Any releases that match the expression will be included in the results")
 	f.StringVarP(&client.Selector, "selector", "l", "", "Selector (label query) to filter on, supports '=', '==', and '!='.(e.g. -l key1=value1,key2=value2). Works only for secret(default) and configmap storage backends.")
